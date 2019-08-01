@@ -10,10 +10,10 @@ fetch_googletest(
     ${PROJECT_BINARY_DIR}/googletest
     )
 
-option(BUILD_EXAMPLES "Option whether to build examples" OFF)
-
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/pybind11)
 add_subdirectory(src)
 
+option(BUILD_EXAMPLES "Option whether to build examples" OFF)
 if(${BUILD_EXAMPLES})
   message(STATUS "Also build examples")
   add_subdirectory(examples)
