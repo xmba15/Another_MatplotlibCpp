@@ -52,51 +52,64 @@ void Matplotlib::updateObjectMap() {
   }
 }
 
-py::object Matplotlib::figure(const double width, const double height) {
-  return this->_objectMap["figure"]("figsize"_a = py::make_tuple(15, 5));
+py::object Matplotlib::figure(const double width, const double height,
+                              const py::dict &kwargs) {
+  return this->_objectMap["figure"]("figsize"_a = py::make_tuple(15, 5),
+                                    **kwargs);
 }
 
-py::object Matplotlib::title(const std::string &titleStr) {
-  return this->_objectMap["title"](titleStr);
+py::object Matplotlib::title(const std::string &titleStr,
+                             const py::dict &kwargs) {
+  return this->_objectMap["title"](titleStr, **kwargs);
 }
 
-py::object Matplotlib::xlabel(const std::string &xlabelStr) {
-  return this->_objectMap["xlabel"](xlabelStr);
+py::object Matplotlib::xlabel(const std::string &xlabelStr,
+                              const py::dict &kwargs) {
+  return this->_objectMap["xlabel"](xlabelStr, **kwargs);
 }
 
-py::object Matplotlib::ylabel(const std::string &ylabelStr) {
-  return this->_objectMap["ylabel"](ylabelStr);
+py::object Matplotlib::ylabel(const std::string &ylabelStr,
+                              const py::dict &kwargs) {
+
+  return this->_objectMap["ylabel"](ylabelStr, **kwargs);
 }
 
-py::object Matplotlib::show() { return this->_objectMap["show"](); }
+py::object Matplotlib::show(const py::dict &kwargs) {
+  return this->_objectMap["show"](**kwargs);
+}
 
-py::object Matplotlib::savefig(const std::string &figName) {
-  return this->_objectMap["savefig"](figName);
+py::object Matplotlib::savefig(const std::string &figName,
+                               const py::dict &kwargs) {
+  return this->_objectMap["savefig"](figName, **kwargs);
 }
 
 py::object Matplotlib::subplot(const size_t nrows, const size_t ncols,
-                               const size_t index) {
-  return this->_objectMap["subplot"](nrows, ncols, index);
+                               const size_t index, const py::dict &kwargs) {
+  return this->_objectMap["subplot"](nrows, ncols, index, **kwargs);
 }
 
-py::object Matplotlib::suptitle(const std::string &suptitleStr) {
+py::object Matplotlib::suptitle(const std::string &suptitleStr,
+                                const py::dict &kwargs) {
   return this->_objectMap["suptitle"](suptitleStr);
 }
 
-py::object Matplotlib::legend(const std::string &location) {
-  return this->_objectMap["legend"]("loc"_a = location);
+py::object Matplotlib::legend(const std::string &location,
+                              const py::dict &kwargs) {
+  return this->_objectMap["legend"]("loc"_a = location, **kwargs);
 }
 
-py::object Matplotlib::axes(const py::object &figure) {
-  return this->_objectMap["Axes3D"](figure);
+py::object Matplotlib::axes(const py::object &figure, const py::dict &kwargs) {
+  return this->_objectMap["Axes3D"](figure, **kwargs);
 }
 
-void Matplotlib::set_xlabel(py::object *axes, const std::string &xlabel) {
-  axes->attr("set_xlabel")(xlabel);
+void Matplotlib::set_xlabel(py::object *axes, const std::string &xlabel,
+                            const py::dict &kwargs) {
+  axes->attr("set_xlabel")(xlabel, **kwargs);
 }
 
-void Matplotlib::set_ylabel(py::object *axes, const std::string &ylabel) {
-  axes->attr("set_ylabel")(ylabel);
+void Matplotlib::set_ylabel(py::object *axes, const std::string &ylabel,
+                            const py::dict &kwargs) {
+  axes->attr("set_ylabel")(ylabel, **kwargs);
 }
 
 } // namespace vis

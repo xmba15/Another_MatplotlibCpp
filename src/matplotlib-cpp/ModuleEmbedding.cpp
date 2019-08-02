@@ -11,6 +11,10 @@
 
 #include <matplotlib-cpp/ModuleEmbedding.hpp>
 
+#ifndef WITH_DEBUG
+#define ENABLE_DEBUG 1
+#endif // WITH_DEBUG
+
 namespace pe {
 ModuleEmbedding::ModuleEmbedding(const std::string &moduleName)
     : _moduleName(moduleName) {
@@ -31,11 +35,11 @@ bool ModuleEmbedding::import() {
   } catch (py::error_already_set &e) {
 #if ENABLE_DEBUG
     py::print(e);
-#endif  // ENABLE_DEBUG
+#endif // ENABLE_DEBUG
     return false;
   }
 
   return true;
 }
 
-}  // namespace pe
+} // namespace pe

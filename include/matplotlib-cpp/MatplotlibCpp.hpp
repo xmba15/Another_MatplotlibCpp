@@ -80,63 +80,75 @@ public:
   /** wrapped methods from "matplotlib.pyplot" module. mainly used for 2d
    * visualization
    */
-  py::object figure(const double width = 15, const double height = 5);
-  py::object title(const std::string &titleStr);
-  py::object xlabel(const std::string &xlabelStr);
-  py::object ylabel(const std::string &ylabelStr);
-  py::object show();
-  py::object savefig(const std::string &figName);
+  py::object figure(const double width = 15, const double height = 5,
+                    const py::dict &kwargs = py::dict());
+
+  py::object title(const std::string &titleStr,
+                   const py::dict &kwargs = py::dict());
+  py::object xlabel(const std::string &xlabelStr,
+                    const py::dict &kwargs = py::dict());
+  py::object ylabel(const std::string &ylabelStr,
+                    const py::dict &kwargs = py::dict());
+  py::object show(const py::dict &kwargs = py::dict());
+  py::object savefig(const std::string &figName,
+                     const py::dict &kwargs = py::dict());
 
   template <typename DATA_TYPE>
   py::object
   plot(const std::vector<DATA_TYPE> &x, const std::vector<DATA_TYPE> &y,
-       const std::string &color = "green", const std::string &marker = "o",
-       const std::string &linestyle = "dashed");
+       const py::dict &kwargs = py::dict("color"_a = "green", "marker"_a = "o",
+                                         "linestyle"_a = "dashed"));
 
-  py::object subplot(const size_t nrows, const size_t ncols,
-                     const size_t index);
-  py::object suptitle(const std::string &suptitleStr);
-
-  template <typename DATA_TYPE>
-  py::object hist(const std::vector<DATA_TYPE> &x, const size_t bins);
+  py::object subplot(const size_t nrows, const size_t ncols, const size_t index,
+                     const py::dict &kwargs = py::dict());
+  py::object suptitle(const std::string &suptitleStr,
+                      const py::dict &kwargs = py::dict());
 
   template <typename DATA_TYPE>
-  py::object scatter(const std::vector<DATA_TYPE> &x,
-                     const std::vector<DATA_TYPE> &y,
-                     const std::string &color = "pink",
-                     const std::string &marker = "o", const double alpha = 0.5);
+  py::object hist(const std::vector<DATA_TYPE> &x, const size_t bins,
+                  const py::dict &kwargs = py::dict());
 
-  py::object legend(const std::string &location = "best");
+  template <typename DATA_TYPE>
+  py::object
+  scatter(const std::vector<DATA_TYPE> &x, const std::vector<DATA_TYPE> &y,
+          const py::dict &kwargs = py::dict("color"_a = "pink",
+                                            "marker"_a = "o", "alpha"_a = 0.5));
+
+  py::object legend(const std::string &location = "best",
+                    const py::dict &kwargs = py::dict());
   //@}
 
   //@{
   /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d
    * visualization
    */
-  py::object axes(const py::object &figure);
-  void set_xlabel(py::object *axes, const std::string &xlabel);
-  void set_ylabel(py::object *axes, const std::string &ylabel);
+  py::object axes(const py::object &figure,
+                  const py::dict &kwargs = py::dict());
+  void set_xlabel(py::object *axes, const std::string &xlabel,
+                  const py::dict &kwargs = py::dict());
+  void set_ylabel(py::object *axes, const std::string &ylabel,
+                  const py::dict &kwargs = py::dict());
 
   template <typename DATA_TYPE>
   void scatter(py::object *axes, const std::vector<DATA_TYPE> &x,
                const std::vector<DATA_TYPE> &y,
-               const std::string &marker = "o");
+               const py::dict &kwargs = py::dict("marker"_a = "o"));
 
   template <typename DATA_TYPE>
   void scatter(py::object *axes, const std::vector<DATA_TYPE> &x,
                const std::vector<DATA_TYPE> &y, const std::vector<DATA_TYPE> &z,
-               const std::string &marker = "o");
+               const py::dict &kwargs = py::dict("marker"_a = "o"));
 
   template <typename DATA_TYPE>
   void scatter3D(py::object *axes, const std::vector<DATA_TYPE> &x,
                  const std::vector<DATA_TYPE> &y,
-                 const std::string &marker = "o");
+                 const py::dict &kwargs = py::dict("marker"_a = "o"));
 
   template <typename DATA_TYPE>
   void plot(py::object *axes, const std::vector<DATA_TYPE> &x,
             const std::vector<DATA_TYPE> &y, const std::vector<DATA_TYPE> &z,
-            const std::string &color = "green",
-            const std::string &marker = "o");
+            const py::dict &kwargs = py::dict("color"_a = "green",
+                                              "marker"_a = "o"));
   //@}
 
 private:
@@ -176,58 +188,51 @@ private:
 template <typename DATA_TYPE>
 py::object Matplotlib::plot(const std::vector<DATA_TYPE> &x,
                             const std::vector<DATA_TYPE> &y,
-                            const std::string &color, const std::string &marker,
-                            const std::string &linestyle) {
-  return this->_objectMap["plot"](py::cast(x), py::cast(y), "color"_a = color,
-                                  "marker"_a = marker,
-                                  "linestyle"_a = linestyle);
+                            const py::dict &kwargs) {
+  return this->_objectMap["plot"](py::cast(x), py::cast(y), **kwargs);
 }
 
 template <typename DATA_TYPE>
-py::object Matplotlib::hist(const std::vector<DATA_TYPE> &x,
-                            const size_t bins) {
-  return this->_objectMap["hist"](py::cast(x), bins);
+py::object Matplotlib::hist(const std::vector<DATA_TYPE> &x, const size_t bins,
+                            const py::dict &kwargs) {
+  return this->_objectMap["hist"](py::cast(x), bins, **kwargs);
 }
 
 template <typename DATA_TYPE>
 py::object Matplotlib::scatter(const std::vector<DATA_TYPE> &x,
                                const std::vector<DATA_TYPE> &y,
-                               const std::string &color,
-                               const std::string &marker, const double alpha) {
-  return this->_objectMap["scatter"](py::cast(x), py::cast(y), "c"_a = color,
-                                     "marker"_a = marker, "alpha"_a = alpha);
+                               const py::dict &kwargs) {
+
+  return this->_objectMap["scatter"](py::cast(x), py::cast(y), **kwargs);
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatter(py::object *axes, const std::vector<DATA_TYPE> &x,
                          const std::vector<DATA_TYPE> &y,
-                         const std::string &marker) {
-  axes->attr("scatter")(py::cast(x), py::cast(y), "marker"_a = marker);
+                         const py::dict &kwargs) {
+  axes->attr("scatter")(py::cast(x), py::cast(y), **kwargs);
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatter(py::object *axes, const std::vector<DATA_TYPE> &x,
                          const std::vector<DATA_TYPE> &y,
                          const std::vector<DATA_TYPE> &z,
-                         const std::string &marker) {
-  axes->attr("scatter")(py::cast(x), py::cast(y), py::cast(z),
-                        "marker"_a = marker);
+                         const py::dict &kwargs) {
+  axes->attr("scatter")(py::cast(x), py::cast(y), py::cast(z), **kwargs);
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatter3D(py::object *axes, const std::vector<DATA_TYPE> &x,
                            const std::vector<DATA_TYPE> &y,
-                           const std::string &marker) {
-  axes->attr("scatter3D")(py::cast(x), py::cast(y));
+                           const py::dict &kwargs) {
+  axes->attr("scatter3D")(py::cast(x), py::cast(y), **kwargs);
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::plot(py::object *axes, const std::vector<DATA_TYPE> &x,
                       const std::vector<DATA_TYPE> &y,
-                      const std::vector<DATA_TYPE> &z, const std::string &color,
-                      const std::string &marker) {
-  axes->attr("plot")(py::cast(x), py::cast(y), py::cast(z), "color"_a = color,
-                     "marker"_a = marker);
+                      const std::vector<DATA_TYPE> &z, const py::dict &kwargs) {
+  axes->attr("plot")(py::cast(x), py::cast(y), py::cast(z), **kwargs);
 }
 
 } // namespace vis
