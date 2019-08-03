@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/xmba15/Another_MatplotlibCpp.svg?branch=master)](https://travis-ci.org/xmba15/Another_MatplotlibCpp/builds)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 # C++ Wrapper for Python Matplotlib Lib #
 I was looking for a light-weighted C++ library for visualization to integrate into my programs when I realized that there are no officialy *small* ones existing. One attempt that I noticed was a C++ wrapper for the famous visualization python library: Matplotlib (the original one can be found [HERE](https://github.com/lava/matplotlib-cpp); and the modified program with CMake build can be found [HERE](https://github.com/xmba15/matplotlib-cpp)). However, looking at the source codes to find a way to expand the library, I found out that the current approach directly utilizing Python/C API; makes it quite difficult for an expansion. That is the start of this library, written with pybind11 in hope of providing a more convenient way to connect with Matplotlib library.
 

@@ -1,0 +1,30 @@
+language:
+  - cpp
+
+dist: xenial
+
+sudo: false
+
+compiler:
+  - gcc
+
+before_install:
+  - readonly PARENT_DIR=$(pwd)
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+
+script:
+  - cd ${PARENT_DIR}
+  - git submodule update --init --recursive
+  - mkdir build
+  - cd build
+  - cmake -DBUILD_EXAMPLES=ON ../
+  - cmake --build .
+
+notifications:
+  email: false
