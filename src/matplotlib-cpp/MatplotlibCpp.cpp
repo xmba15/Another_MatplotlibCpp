@@ -17,9 +17,9 @@ Matplotlib::Matplotlib()
     : _mpl(ModuleEmbedding("matplotlib")),
       _plt(ModuleEmbedding("matplotlib.pyplot")),
       _mplot3d(ModuleEmbedding("mpl_toolkits.mplot3d")) {
-  this->_imported = this->_mpl.import();
-  this->_imported = this->_plt.import();
-  this->_imported = this->_mplot3d.import();
+  this->_imported = this->_mpl.importModule();
+  this->_imported = this->_plt.importModule();
+  this->_imported = this->_mplot3d.importModule();
 
   this->updateObjectMap();
 }

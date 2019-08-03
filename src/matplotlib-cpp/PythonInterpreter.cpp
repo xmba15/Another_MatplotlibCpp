@@ -12,13 +12,13 @@
 #include <matplotlib-cpp/PythonInterpreter.hpp>
 
 namespace pe {
-PythonInterpreter::PythonInterpreter() { Py_Initialize(); }
+PythonInterpreter::PythonInterpreter() { pybind11::initialize_interpreter(); }
 
-PythonInterpreter::~PythonInterpreter() { Py_Finalize(); }
+PythonInterpreter::~PythonInterpreter() { pybind11::finalize_interpreter(); }
 
 PythonInterpreter &PythonInterpreter::getInstance() {
   static PythonInterpreter instance;
   return instance;
 }
 
-}  // namespace pe
+} // namespace pe

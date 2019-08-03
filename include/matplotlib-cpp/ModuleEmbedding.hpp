@@ -48,16 +48,19 @@ public:
   const py::module &pyModule() const;
 
   /**
+   *  @brief constant getter of imported flag
+   *
+   */
+  const bool &imported() const;
+
+  /**
    *  @brief Import python module
    *
    *  This procedure equals "import [module_name]" in python.
    *
    *  @return true if imported successfully; false other wise
    */
-  bool import();
-
-  //! boolean flag to check if the module has been imported successully or not.
-  bool imported = false;
+  bool importModule();
 
 private:
   //! name of the python module
@@ -65,6 +68,9 @@ private:
 
   //! python object corresponding to the module
   py::module _pyModule;
+
+  //! boolean flag to check if the module has been imported successully or not.
+  bool _imported = false;
 };
 } // namespace pe
 

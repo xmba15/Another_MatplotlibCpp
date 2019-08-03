@@ -8,13 +8,14 @@
  */
 
 #include <matplotlib-cpp/MatplotlibCpp.hpp>
+#include <pybind11/eval.h>
+#include <pybind11/pybind11.h>
 
 int main(int argc, char *argv[]) {
-  using namespace pybind11::literals; // NOLINT(build/namespaces_literals)
-
   pe::vis::Matplotlib mpllib;
   if (!mpllib.imported()) {
     std::cout << "Failed to import matplotlib library\n";
+    exit(EXIT_FAILURE);
   }
 
   int n = 5000;
@@ -26,13 +27,19 @@ int main(int argc, char *argv[]) {
   }
 
   mpllib.figure(50, 50);
-  py::dict kwargs = py::dict("label"_a = "sine line");
+  py::dict kwargs;
+  kwargs[py::cast("label")] = "sine line";
+
+  // or use literals
+  // using namespace pybind11::literals; // NOLINT(build/namespaces_literals)
+  // py::dict kwargs = py::dict("label"_a = "sine line");
+
   mpllib.plot(x, y, kwargs);
   mpllib.title("Sample plot");
   mpllib.legend();
 
   mpllib.show();
-  mpllib.savefig("temp");
+  mpllib.savefig("temp.png");
 
   return 0;
 }

@@ -10,6 +10,7 @@
  */
 
 #include <matplotlib-cpp/ModuleEmbedding.hpp>
+#include <pybind11/eval.h>
 
 #ifndef WITH_DEBUG
 #define ENABLE_DEBUG 1
@@ -28,16 +29,14 @@ const std::string &ModuleEmbedding::moduleName() const {
 
 const py::module &ModuleEmbedding::pyModule() const { return this->_pyModule; }
 
-bool ModuleEmbedding::import() {
+bool ModuleEmbedding::importModule() {
   try {
     this->_pyModule = py::module::import(this->_moduleName.c_str());
-    this->imported = true;
   } catch (py::error_already_set &e) {
-#if ENABLE_DEBUG
-    py::print(e);
-#endif // ENABLE_DEBUG
+    py::print(e.what());
     return false;
   }
+  this->_imported = true;
 
   return true;
 }
