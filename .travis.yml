@@ -1,0 +1,45 @@
+language:
+  - cpp
+
+dist: xenial
+
+sudo: false
+
+compiler:
+  - gcc
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+      - g++-6
+
+env:
+  - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+before_install:
+  - readonly PARENT_DIR=$(pwd)
+  - eval "${MATRIX_EVAL}"
+
+before_script:
+  - pyenv versions
+  - pyenv global 3.6.7
+  - ls -al $(python-config --prefix)/bin $(python-config --prefix)/lib $(python-config --prefix)/include
+
+script:
+  - cd ${PARENT_DIR}
+  - git submodule update --init --recursive
+  - mkdir build
+  - cd build
+  - |
+    cmake \
+      -DPYTHON_EXECUTABLE=$(python-config --prefix)/bin/python3.6 \
+      -DPYTHON_LIBRARY=$(python-config --prefix)/lib/libpython3.6m.so \
+      -DPYTHON_INCLUDE_DIR=$(python-config --prefix)/include/python3.6m \
+      ..
+  - make -j`nproc`
+
+notifications:
+  email: false
