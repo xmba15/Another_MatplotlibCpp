@@ -20,7 +20,8 @@
 /**
  *  @brief python embedding space
  */
-namespace pe {
+namespace pe
+{
 /**
  *  @brief Caller of Python Interpreter
  *
@@ -28,19 +29,35 @@ namespace pe {
  * executed; hence this caller utilizes singleton pattern for calling python
  * interpreter.
  */
-class PythonInterpreter {
-public:
-  /**
-   *  @brief getter for static single instance of PythonInterpreter
-   *
-   */
-  static PythonInterpreter &getInstance();
+class PythonInterpreter
+{
+ public:
+    /**
+     *  @brief getter for static single instance of PythonInterpreter
+     *
+     */
+    static PythonInterpreter& getInstance();
 
-private:
-  PythonInterpreter();
-  ~PythonInterpreter();
+ private:
+    PythonInterpreter();
+    ~PythonInterpreter();
 };
 
-} // namespace pe
+PythonInterpreter::PythonInterpreter()
+{
+    pybind11::initialize_interpreter();
+}
 
+PythonInterpreter::~PythonInterpreter()
+{
+    pybind11::finalize_interpreter();
+}
+
+PythonInterpreter& PythonInterpreter::getInstance()
+{
+    static PythonInterpreter instance;
+    return instance;
+}
+
+}  // namespace pe
 #endif /* PYTHONINTERPRETER_HPP_ */
