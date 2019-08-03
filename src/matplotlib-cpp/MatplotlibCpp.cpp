@@ -93,6 +93,8 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
                   const pybind11::dict& kwargs = pybind11::dict("color"_a = "green", "marker"_a = "o"));
     //@}
 
+    pybind11::dict transformAnyBaseToDict(const AnyBaseMap& anyBM) const;
+
  private:
     /**
      *  @brief initialize python object corresponding to the name held in object map.
@@ -154,6 +156,31 @@ void Matplotlib::MatplotlibImpl::updateObjectMap()
     for (const std::string& objectName : this->_mplot3dObjectNames) {
         this->_objectMap.emplace(objectName, this->_mplot3d.pyModule().attr(objectName.c_str()));
     }
+}
+
+pybind11::dict Matplotlib::MatplotlibImpl::transformAnyBaseToDict(const AnyBaseMap& anyBM) const
+{
+    pybind11::dict result;
+    for (const auto& anyB : anyBM) {
+        std::pair<std::string, std::shared_ptr<AnyBase>> anyBData = anyB.second;
+        if (anyBData.first == "") {
+            continue;
+        }
+
+        if (anyBData.first == "bool") {
+            result[pybind11::cast(anyB.first)] = dynamic_cast<Any<bool>&>(*anyBData.second).data;
+        } else if (anyBData.first == "int") {
+            result[pybind11::cast(anyB.first)] = dynamic_cast<Any<int>&>(*anyBData.second).data;
+        } else if (anyBData.first == "float") {
+            result[pybind11::cast(anyB.first)] = dynamic_cast<Any<float>&>(*anyBData.second).data;
+        } else if (anyBData.first == "double") {
+            result[pybind11::cast(anyB.first)] = dynamic_cast<Any<double>&>(*anyBData.second).data;
+        } else {
+            result[pybind11::cast(anyB.first)] = dynamic_cast<Any<std::string>&>(*anyBData.second).data;
+        }
+    }
+
+    return result;
 }
 
 pybind11::object Matplotlib::MatplotlibImpl::figure(const double width, const double height,
@@ -270,6 +297,13 @@ void Matplotlib::MatplotlibImpl::plotAxes(const std::vector<DATA_TYPE>& x, const
 
 //-------------------------------------------------------------------------------------------------------------//
 
+const std::unordered_map<std::type_index, std::string> Matplotlib::TYPE_NAMES = {
+    {std::type_index(typeid(bool)), "bool"},
+    {std::type_index(typeid(int)), "int"},
+    {std::type_index(typeid(float)), "float"},
+    {std::type_index(typeid(double)), "double"},
+    {std::type_index(typeid(std::string)), "string"}};
+
 Matplotlib::Matplotlib() : piml(std::unique_ptr<MatplotlibImpl>(new MatplotlibImpl))
 {
 }
@@ -283,109 +317,109 @@ const bool& Matplotlib::imported() const
 
 void Matplotlib::figure(const double width, const double height, const AnyBaseMap& anyBM)
 {
-    this->piml->figure(width, height);
+    this->piml->figure(width, height, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::title(const std::string& titleStr, const AnyBaseMap& anyBM)
 {
-    this->piml->title(titleStr);
+    this->piml->title(titleStr, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::xlabel(const std::string& xlabelStr, const AnyBaseMap& anyBM)
 {
-    this->piml->xlabel(xlabelStr);
+    this->piml->xlabel(xlabelStr, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::ylabel(const std::string& ylabelStr, const AnyBaseMap& anyBM)
 {
-    this->piml->ylabel(ylabelStr);
+    this->piml->ylabel(ylabelStr, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::show(const AnyBaseMap& anyBM)
 {
-    this->piml->show();
+    this->piml->show(this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::savefig(const std::string& figName, const AnyBaseMap& anyBM)
 {
-    this->piml->savefig(figName);
+    this->piml->savefig(figName, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::subplot(const size_t nrows, const size_t ncols, const size_t index, const AnyBaseMap& anyBM)
 {
-    this->piml->subplot(nrows, ncols, index);
+    this->piml->subplot(nrows, ncols, index, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::suptitle(const std::string& suptitleStr, const AnyBaseMap& anyBM)
 {
-    this->piml->suptitle(suptitleStr);
+    this->piml->suptitle(suptitleStr, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::legend(const std::string& location, const AnyBaseMap& anyBM)
 {
-    this->piml->legend(location);
+    this->piml->legend(location, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::initializeAxes(const double width, const double height, const AnyBaseMap& anyBM)
 {
-    this->piml->initializeAxes(width, height);
+    this->piml->initializeAxes(width, height, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::set_xlabelAxes(const std::string& xlabel, const AnyBaseMap& anyBM)
 {
-    this->piml->set_xlabelAxes(xlabel);
+    this->piml->set_xlabelAxes(xlabel, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::set_ylabelAxes(const std::string& ylabel, const AnyBaseMap& anyBM)
 {
-    this->piml->set_ylabelAxes(ylabel);
+    this->piml->set_ylabelAxes(ylabel, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
 
 {
-    this->piml->plot(x, y);
+    this->piml->plot(x, y, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::hist(const std::vector<DATA_TYPE>& x, const size_t bins, const AnyBaseMap& anyBM)
 {
-    this->piml->hist(x, bins);
+    this->piml->hist(x, bins, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatter(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
 
 {
-    this->piml->scatter(x, y);
+    this->piml->scatter(x, y, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
 {
-    this->piml->scatterAxes(x, y);
+    this->piml->scatterAxes(x, y, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                              const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM)
 {
-    this->piml->scatterAxes(x, y, z);
+    this->piml->scatterAxes(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                                const AnyBaseMap& anyBM)
 {
-    this->piml->scatter3DAxes(x, y);
+    this->piml->scatter3DAxes(x, y, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
 void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                           const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM)
 {
-    this->piml->plotAxes(x, y, z);
+    this->piml->plotAxes(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 #define QUICK_CAST(DATA_TYPE)                                                                                          \

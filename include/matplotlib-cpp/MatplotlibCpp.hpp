@@ -15,7 +15,13 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <typeindex>
+#include <typeinfo>
+#include <unordered_map>
+#include <utility>
 #include <vector>
+
+#include "AnyBase.hpp"
 
 namespace pe
 {
@@ -33,7 +39,8 @@ namespace vis
 class Matplotlib
 {
  public:
-    using AnyBaseMap = std::map<int, int>;
+    using AnyBaseMap = std::map<std::string, std::pair<std::string, std::shared_ptr<AnyBase>>>;
+    static const std::unordered_map<std::type_index, std::string> TYPE_NAMES;
 
     Matplotlib();
     ~Matplotlib();
@@ -56,7 +63,8 @@ class Matplotlib
     void savefig(const std::string& figName, const AnyBaseMap& anyBM = {});
 
     template <typename DATA_TYPE>
-    void plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM = {});
+    void plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+              const AnyBaseMap& anyBM = {{"color", createAnyBaseMapData<std::string>("pink")}});
 
     void subplot(const size_t nrows, const size_t ncols, const size_t index, const AnyBaseMap& anyBM = {});
     void suptitle(const std::string& suptitleStr, const AnyBaseMap& anyBM = {});
@@ -93,10 +101,22 @@ class Matplotlib
                   const AnyBaseMap& anyBM = {});
     //@}
 
+    template <typename PARAM_DATA_TYPE>
+    static std::pair<std::string, std::shared_ptr<AnyBase>> createAnyBaseMapData(PARAM_DATA_TYPE data);
+
  private:
     class MatplotlibImpl;
     std::unique_ptr<MatplotlibImpl> piml;
 };
+
+template <typename PARAM_DATA_TYPE>
+std::pair<std::string, std::shared_ptr<AnyBase>> Matplotlib::createAnyBaseMapData(PARAM_DATA_TYPE data)
+{
+    auto it = TYPE_NAMES.find(std::type_index(typeid(data)));
+    std::string type_name = (it != TYPE_NAMES.end()) ? it->second : "";
+
+    return std::make_pair(type_name, std::make_shared<Any<PARAM_DATA_TYPE>>(data));
+}
 
 }  // namespace vis
 }  // namespace pe
