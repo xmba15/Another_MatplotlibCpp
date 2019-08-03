@@ -38,59 +38,57 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     /** wrapped methods from "matplotlib.pyplot" module. mainly used for 2d
      * visualization
      */
-    pybind11::object figure(const double width = 25, const double height = 25,
-                            const pybind11::dict& kwargs = pybind11::dict());
+    pybind11::object figure(const double width, const double height, const pybind11::dict& kwargs);
 
     pybind11::object title(const std::string& titleStr, const pybind11::dict& kwargs = pybind11::dict());
-    pybind11::object xlabel(const std::string& xlabelStr, const pybind11::dict& kwargs = pybind11::dict());
-    pybind11::object ylabel(const std::string& ylabelStr, const pybind11::dict& kwargs = pybind11::dict());
-    pybind11::object show(const pybind11::dict& kwargs = pybind11::dict());
-    pybind11::object savefig(const std::string& figName, const pybind11::dict& kwargs = pybind11::dict());
+    pybind11::object xlabel(const std::string& xlabelStr, const pybind11::dict& kwargs);
+    pybind11::object xlim(const double left, const double right, const pybind11::dict& kwargs);
+    pybind11::object ylabel(const std::string& ylabelStr, const pybind11::dict& kwargs);
+    pybind11::object ylim(const double left, const double right, const pybind11::dict& kwargs);
+    pybind11::object show(const pybind11::dict& kwargs);
+    pybind11::object savefig(const std::string& figName, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
     pybind11::object plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                          const pybind11::dict& kwargs = pybind11::dict("color"_a = "green", "marker"_a = "o",
-                                                                        "linestyle"_a = "dashed"));
+                          const pybind11::dict& kwargs);
 
-    pybind11::object subplot(const size_t nrows, const size_t ncols, const size_t index,
-                             const pybind11::dict& kwargs = pybind11::dict());
-    pybind11::object suptitle(const std::string& suptitleStr, const pybind11::dict& kwargs = pybind11::dict());
+    pybind11::object subplot(const size_t nrows, const size_t ncols, const size_t index, const pybind11::dict& kwargs);
+    pybind11::object suptitle(const std::string& suptitleStr, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    pybind11::object hist(const std::vector<DATA_TYPE>& x, const size_t bins,
-                          const pybind11::dict& kwargs = pybind11::dict());
+    pybind11::object hist(const std::vector<DATA_TYPE>& x, const size_t bins, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
     pybind11::object scatter(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                             const pybind11::dict& kwargs = pybind11::dict("color"_a = "pink", "marker"_a = "o",
-                                                                           "alpha"_a = 0.5));
+                             const pybind11::dict& kwargs);
 
-    pybind11::object legend(const std::string& location = "best", const pybind11::dict& kwargs = pybind11::dict());
+    pybind11::object legend(const std::string& location, const pybind11::dict& kwargs);
+
+    pybind11::object clf();
+    pybind11::object pause(const double interval);
     //@}
 
     //@{
     /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d
      * visualization
      */
-    void initializeAxes(const double width, const double height, const pybind11::dict& kwargs = pybind11::dict());
-    void set_xlabelAxes(const std::string& xlabel, const pybind11::dict& kwargs = pybind11::dict());
-    void set_ylabelAxes(const std::string& ylabel, const pybind11::dict& kwargs = pybind11::dict());
+    void initializeAxes(const double width, const double height, const pybind11::dict& kwargs);
+    void set_xlabelAxes(const std::string& xlabel, const pybind11::dict& kwargs);
+    void set_ylabelAxes(const std::string& ylabel, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                     const pybind11::dict& kwargs = pybind11::dict("marker"_a = "o"));
+    void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
     void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
-                     const pybind11::dict& kwargs = pybind11::dict("marker"_a = "o"));
+                     const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                       const pybind11::dict& kwargs = pybind11::dict("marker"_a = "o"));
+    void scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
     void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
-                  const pybind11::dict& kwargs = pybind11::dict("color"_a = "green", "marker"_a = "o"));
+                  const pybind11::dict& kwargs);
     //@}
 
     pybind11::dict transformAnyBaseToDict(const AnyBaseMap& anyBM) const;
@@ -119,7 +117,8 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
 
     //! names of the targeted object in "matplotlib.pyplot" module.
     const std::vector<std::string> _pltObjectNames = {"figure",  "plot",    "title",    "xlabel", "ylabel",  "show",
-                                                      "savefig", "subplot", "suptitle", "hist",   "scatter", "legend"};
+                                                      "savefig", "subplot", "suptitle", "hist",   "scatter", "legend",
+                                                      "xlim",    "ylim",    "clf",      "pause"};
 
     //! names of the targeted object in "mpl_toolkits.mplot3d" module.
     const std::vector<std::string> _mplot3dObjectNames = {"Axes3D"};
@@ -199,9 +198,19 @@ pybind11::object Matplotlib::MatplotlibImpl::xlabel(const std::string& xlabelStr
     return this->_objectMap["xlabel"](xlabelStr, **kwargs);
 }
 
+pybind11::object Matplotlib::MatplotlibImpl::xlim(const double left, const double right, const pybind11::dict& kwargs)
+{
+    return this->_objectMap["xlim"](left, right, **kwargs);
+}
+
 pybind11::object Matplotlib::MatplotlibImpl::ylabel(const std::string& ylabelStr, const pybind11::dict& kwargs)
 {
     return this->_objectMap["ylabel"](ylabelStr, **kwargs);
+}
+
+pybind11::object Matplotlib::MatplotlibImpl::ylim(const double bottom, const double top, const pybind11::dict& kwargs)
+{
+    return this->_objectMap["ylim"](bottom, top, **kwargs);
 }
 
 pybind11::object Matplotlib::MatplotlibImpl::show(const pybind11::dict& kwargs)
@@ -228,6 +237,16 @@ pybind11::object Matplotlib::MatplotlibImpl::suptitle(const std::string& suptitl
 pybind11::object Matplotlib::MatplotlibImpl::legend(const std::string& location, const pybind11::dict& kwargs)
 {
     return this->_objectMap["legend"]("loc"_a = location, **kwargs);
+}
+
+pybind11::object Matplotlib::MatplotlibImpl::clf()
+{
+    return this->_objectMap["clf"]();
+}
+
+pybind11::object Matplotlib::MatplotlibImpl::pause(const double interval)
+{
+    return this->_objectMap["pause"](interval);
 }
 
 void Matplotlib::MatplotlibImpl::initializeAxes(const double width, const double height, const pybind11::dict& kwargs)
@@ -330,9 +349,19 @@ void Matplotlib::xlabel(const std::string& xlabelStr, const AnyBaseMap& anyBM)
     this->piml->xlabel(xlabelStr, this->piml->transformAnyBaseToDict(anyBM));
 }
 
+void Matplotlib::xlim(const double left, const double right, const AnyBaseMap& anyBM)
+{
+    this->piml->xlim(left, right, this->piml->transformAnyBaseToDict(anyBM));
+}
+
 void Matplotlib::ylabel(const std::string& ylabelStr, const AnyBaseMap& anyBM)
 {
     this->piml->ylabel(ylabelStr, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+void Matplotlib::ylim(const double bottom, const double top, const AnyBaseMap& anyBM)
+{
+    this->piml->xlim(bottom, top, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::show(const AnyBaseMap& anyBM)
@@ -360,6 +389,16 @@ void Matplotlib::legend(const std::string& location, const AnyBaseMap& anyBM)
     this->piml->legend(location, this->piml->transformAnyBaseToDict(anyBM));
 }
 
+void Matplotlib::clf()
+{
+    this->piml->clf();
+}
+
+void Matplotlib::pause(const double interval)
+{
+    this->piml->pause(interval);
+}
+
 void Matplotlib::initializeAxes(const double width, const double height, const AnyBaseMap& anyBM)
 {
     this->piml->initializeAxes(width, height, this->piml->transformAnyBaseToDict(anyBM));
@@ -380,6 +419,17 @@ void Matplotlib::plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TY
 
 {
     this->piml->plot(x, y, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::plot(const std::vector<DATA_TYPE>& x, const std::function<DATA_TYPE(DATA_TYPE)>& xFunc,
+                      const AnyBaseMap& anyBM)
+
+{
+    std::vector<DATA_TYPE> y;
+    std::transform(x.cbegin(), x.cend(), std::back_inserter(y), [&xFunc](const DATA_TYPE& v) { return xFunc(v); });
+
+    this->plot(x, y, anyBM);
 }
 
 template <typename DATA_TYPE>
@@ -425,6 +475,8 @@ void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DAT
 #define QUICK_CAST(DATA_TYPE)                                                                                          \
     template void Matplotlib::plot<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,        \
                                               const AnyBaseMap& anyBM);                                                \
+    template void Matplotlib::plot(const std::vector<DATA_TYPE>& x, const std::function<DATA_TYPE(DATA_TYPE)>& xFunc,  \
+                                   const AnyBaseMap& anyBM);                                                           \
     template void Matplotlib::hist<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const size_t bins,                      \
                                               const AnyBaseMap& anyBM);                                                \
     template void Matplotlib::scatter<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,     \

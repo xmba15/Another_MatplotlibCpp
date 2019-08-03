@@ -23,26 +23,37 @@ int main(int argc, char* argv[])
     }
 
     int n = 5000;
-    std::vector<double> x(n), y(n);
+    std::vector<double> x, y, z, w(n, 2);
+    x.reserve(n);
+    y.reserve(n);
+    z.reserve(n);
+
     for (int i = 0; i < n; ++i) {
         x.emplace_back(i * i);
-        y.emplace_back(sin(2 * M_PI * i / 360.0));
+        y.emplace_back(std::sin(2 * M_PI * i / 360.0));
+        z.emplace_back(std::log(i));
     }
 
-    mpllib.figure(50, 50);
+    mpllib.figure(1200, 780);
 
-    mpllib.plot(x, y,
-                {{"label", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("sine line")},
-                 {"marker", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("o")},
-                 {"scalex", pe::vis::Matplotlib::createAnyBaseMapData<bool>(true)},
-                 {"linewidth", pe::vis::Matplotlib::createAnyBaseMapData<int>(2)},
-                 {"color", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("pink")}});
+    mpllib.plot(x, y);
+    mpllib.plot(x, w,
+                {
+                    {"color", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("r")},
+                    {"linestyle", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("--")},
+                });
 
+    mpllib.plot(x, z,
+                {
+                    {"label", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("log(x)")},
+                });
+
+    mpllib.xlim(0, 1000 * 1000);
     mpllib.title("Sample plot");
     mpllib.legend();
 
     mpllib.show();
-    mpllib.savefig("temp.png");
+    mpllib.savefig("Basic.png");
 
     return 0;
 }
