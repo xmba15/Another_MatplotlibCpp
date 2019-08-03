@@ -7,39 +7,42 @@
  *
  */
 
+#include <cmath>
+#include <iostream>
+#include <vector>
+
 #include <matplotlib-cpp/MatplotlibCpp.hpp>
-#include <pybind11/eval.h>
-#include <pybind11/pybind11.h>
 
-int main(int argc, char *argv[]) {
-  pe::vis::Matplotlib mpllib;
-  if (!mpllib.imported()) {
-    std::cout << "Failed to import matplotlib library\n";
-    exit(EXIT_FAILURE);
-  }
+int main(int argc, char* argv[])
+{
+    pe::vis::Matplotlib mpllib;
 
-  int n = 5000;
-  std::vector<double> x(n), y(n), z(n), w(n, 2);
-  for (int i = 0; i < n; ++i) {
-    x.emplace_back(i * i);
-    y.emplace_back(sin(2 * M_PI * i / 360.0));
-    z.emplace_back(log(i));
-  }
+    if (!mpllib.imported()) {
+        std::cout << "Failed to import matplotlib library\n";
+        exit(EXIT_FAILURE);
+    }
 
-  mpllib.figure(50, 50);
-  py::dict kwargs;
-  kwargs[py::cast("label")] = "sine line";
+    int n = 5000;
+    std::vector<double> x(n), y(n);
+    for (int i = 0; i < n; ++i) {
+        x.emplace_back(i * i);
+        y.emplace_back(sin(2 * M_PI * i / 360.0));
+    }
 
-  // or use literals
-  // using namespace pybind11::literals; // NOLINT(build/namespaces_literals)
-  // py::dict kwargs = py::dict("label"_a = "sine line");
+    mpllib.figure(50, 50);
 
-  mpllib.plot(x, y, kwargs);
-  mpllib.title("Sample plot");
-  mpllib.legend();
+    mpllib.plot(x, y,
+                {{"label", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("sine line")},
+                 {"marker", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("o")},
+                 {"scalex", pe::vis::Matplotlib::createAnyBaseMapData<bool>(true)},
+                 {"linewidth", pe::vis::Matplotlib::createAnyBaseMapData<int>(2)},
+                 {"color", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("pink")}});
 
-  mpllib.show();
-  mpllib.savefig("temp.png");
+    mpllib.title("Sample plot");
+    mpllib.legend();
 
-  return 0;
+    mpllib.show();
+    mpllib.savefig("temp.png");
+
+    return 0;
 }
