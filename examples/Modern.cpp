@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
                     {"linestyle", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("-")},
                 });
 
-    mpllib.show();
+    // mpllib.show();
     mpllib.savefig("Modern.png");
 
     return 0;

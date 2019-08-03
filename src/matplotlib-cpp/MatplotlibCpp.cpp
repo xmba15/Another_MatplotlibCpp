@@ -10,6 +10,7 @@
  */
 
 #include <pybind11/stl.h>
+#include <pybind11/numpy.h>
 
 #include "ModuleEmbedding.hpp"
 #include <matplotlib-cpp/MatplotlibCpp.hpp>
@@ -89,6 +90,10 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     template <typename DATA_TYPE>
     void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
                   const pybind11::dict& kwargs);
+
+    template <typename DATA_TYPE>
+    void plot_surface(const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,
+                      const std::vector<std::vector<DATA_TYPE>>& z, const pybind11::dict& kwargs);
     //@}
 
     pybind11::dict transformAnyBaseToDict(const AnyBaseMap& anyBM) const;
@@ -314,6 +319,17 @@ void Matplotlib::MatplotlibImpl::plotAxes(const std::vector<DATA_TYPE>& x, const
     this->_objectMap["Axes3D"].attr("plot")(pybind11::cast(x), pybind11::cast(y), pybind11::cast(z), **kwargs);
 }
 
+template <typename DATA_TYPE>
+void Matplotlib::MatplotlibImpl::plot_surface(const std::vector<std::vector<DATA_TYPE>>& x,
+                                              const std::vector<std::vector<DATA_TYPE>>& y,
+                                              const std::vector<std::vector<DATA_TYPE>>& z,
+                                              const pybind11::dict& kwargs)
+{
+    this->_objectMap["Axes3D"].attr("plot_surface")("X"_a = pybind11::array(pybind11::cast(x)),
+                                                    "Y"_a = pybind11::array(pybind11::cast(y)),
+                                                    "Z"_a = pybind11::array(pybind11::cast(z)), **kwargs);
+}
+
 //-------------------------------------------------------------------------------------------------------------//
 
 const std::unordered_map<std::type_index, std::string> Matplotlib::TYPE_NAMES = {
@@ -472,6 +488,14 @@ void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DAT
     this->piml->plotAxes(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
 }
 
+template <typename DATA_TYPE>
+void Matplotlib::plot_surface(const std::vector<std::vector<DATA_TYPE>>& x,
+                              const std::vector<std::vector<DATA_TYPE>>& y,
+                              const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM)
+{
+    this->piml->plot_surface(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
+}
+
 #define QUICK_CAST(DATA_TYPE)                                                                                          \
     template void Matplotlib::plot<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,        \
                                               const AnyBaseMap& anyBM);                                                \
@@ -488,7 +512,10 @@ void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DAT
     template void Matplotlib::scatter3DAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x,                                \
                                                        const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM);      \
     template void Matplotlib::plotAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,    \
-                                                  const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);
+                                                  const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);           \
+    template void Matplotlib::plot_surface<DATA_TYPE>(                                                                 \
+        const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,                    \
+        const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM)
 
 QUICK_CAST(double);
 QUICK_CAST(float);

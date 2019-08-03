@@ -90,7 +90,7 @@ class Matplotlib
     //@{
     /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d  visualization
      */
-    void initializeAxes(const double width, const double height, const AnyBaseMap& anyBM = {});
+    void initializeAxes(const double width = 25, const double height = 25, const AnyBaseMap& anyBM = {});
     void set_xlabelAxes(const std::string& xlabel, const AnyBaseMap& anyBM = {});
     void set_ylabelAxes(const std::string& ylabel, const AnyBaseMap& anyBM = {});
 
@@ -110,6 +110,10 @@ class Matplotlib
     void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
                   const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")},
                                              {"color", createAnyBaseMapData<std::string>("green")}});
+
+    template <typename DATA_TYPE>
+    void plot_surface(const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,
+                      const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM = {});
     //@}
 
     template <typename PARAM_DATA_TYPE>

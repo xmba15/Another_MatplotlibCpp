@@ -2,6 +2,7 @@ list(APPEND EXAMPLES
   "Basic"
   "Modern"
   "Animation"
+  "Surface"
 )
 
 function(__build_example example_name)
