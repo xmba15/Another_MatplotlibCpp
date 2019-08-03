@@ -85,29 +85,30 @@ class Matplotlib
     void legend(const std::string& location = "best", const AnyBaseMap& anyBM = {});
     void clf();
     void pause(const double interval);
+    void grid(const AnyBaseMap& anyBM = {});
     //@}
 
     //@{
     /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d  visualization
      */
-    void initializeAxes(const double width = 25, const double height = 25, const AnyBaseMap& anyBM = {});
-    void set_xlabelAxes(const std::string& xlabel, const AnyBaseMap& anyBM = {});
-    void set_ylabelAxes(const std::string& ylabel, const AnyBaseMap& anyBM = {});
+    void initializeAxes3D(const double width = 25, const double height = 25, const AnyBaseMap& anyBM = {});
+    void set_xlabelAxes3D(const std::string& xlabel, const AnyBaseMap& anyBM = {});
+    void set_ylabelAxes3D(const std::string& ylabel, const AnyBaseMap& anyBM = {});
 
     template <typename DATA_TYPE>
-    void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+    void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                      const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
 
     template <typename DATA_TYPE>
-    void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
+    void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
                      const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
 
     template <typename DATA_TYPE>
-    void scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+    void scatter3DAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                        const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
 
     template <typename DATA_TYPE>
-    void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
+    void plotAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
                   const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")},
                                              {"color", createAnyBaseMapData<std::string>("green")}});
 

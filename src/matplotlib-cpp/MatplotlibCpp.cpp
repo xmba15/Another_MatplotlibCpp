@@ -9,8 +9,8 @@
  *
  */
 
-#include <pybind11/stl.h>
 #include <pybind11/numpy.h>
+#include <pybind11/stl.h>
 
 #include "ModuleEmbedding.hpp"
 #include <matplotlib-cpp/MatplotlibCpp.hpp>
@@ -67,29 +67,31 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
 
     pybind11::object clf();
     pybind11::object pause(const double interval);
+    pybind11::object grid(const pybind11::dict& kwargs);
     //@}
 
     //@{
     /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d
      * visualization
      */
-    void initializeAxes(const double width, const double height, const pybind11::dict& kwargs);
-    void set_xlabelAxes(const std::string& xlabel, const pybind11::dict& kwargs);
-    void set_ylabelAxes(const std::string& ylabel, const pybind11::dict& kwargs);
+    void initializeAxes3D(const double width, const double height, const pybind11::dict& kwargs);
+    void set_xlabelAxes3D(const std::string& xlabel, const pybind11::dict& kwargs);
+    void set_ylabelAxes3D(const std::string& ylabel, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
+    void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
-                     const pybind11::dict& kwargs);
+    void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                       const std::vector<DATA_TYPE>& z, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
+    void scatter3DAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                         const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
-                  const pybind11::dict& kwargs);
+    void plotAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
+                    const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
     void plot_surface(const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,
@@ -123,7 +125,7 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     //! names of the targeted object in "matplotlib.pyplot" module.
     const std::vector<std::string> _pltObjectNames = {"figure",  "plot",    "title",    "xlabel", "ylabel",  "show",
                                                       "savefig", "subplot", "suptitle", "hist",   "scatter", "legend",
-                                                      "xlim",    "ylim",    "clf",      "pause"};
+                                                      "xlim",    "ylim",    "clf",      "pause",  "grid"};
 
     //! names of the targeted object in "mpl_toolkits.mplot3d" module.
     const std::vector<std::string> _mplot3dObjectNames = {"Axes3D"};
@@ -254,18 +256,23 @@ pybind11::object Matplotlib::MatplotlibImpl::pause(const double interval)
     return this->_objectMap["pause"](interval);
 }
 
-void Matplotlib::MatplotlibImpl::initializeAxes(const double width, const double height, const pybind11::dict& kwargs)
+pybind11::object Matplotlib::MatplotlibImpl::grid(const pybind11::dict& kwargs)
+{
+    return this->_objectMap["grid"](**kwargs);
+}
+
+void Matplotlib::MatplotlibImpl::initializeAxes3D(const double width, const double height, const pybind11::dict& kwargs)
 {
     pybind11::object fig = this->figure(width, height, kwargs);
     this->_objectMap["Axes3D"] = this->_objectMap["Axes3D"](fig, **kwargs);
 }
 
-void Matplotlib::MatplotlibImpl::set_xlabelAxes(const std::string& xlabel, const pybind11::dict& kwargs)
+void Matplotlib::MatplotlibImpl::set_xlabelAxes3D(const std::string& xlabel, const pybind11::dict& kwargs)
 {
     this->_objectMap["Axes3D"].attr("set_xlabel")(xlabel, **kwargs);
 }
 
-void Matplotlib::MatplotlibImpl::set_ylabelAxes(const std::string& ylabel, const pybind11::dict& kwargs)
+void Matplotlib::MatplotlibImpl::set_ylabelAxes3D(const std::string& ylabel, const pybind11::dict& kwargs)
 {
     this->_objectMap["Axes3D"].attr("set_ylabel")(ylabel, **kwargs);
 }
@@ -292,29 +299,29 @@ pybind11::object Matplotlib::MatplotlibImpl::scatter(const std::vector<DATA_TYPE
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::MatplotlibImpl::scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                                             const pybind11::dict& kwargs)
+void Matplotlib::MatplotlibImpl::scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                                               const pybind11::dict& kwargs)
 {
     this->_objectMap["Axes3D"].attr("scatter")(pybind11::cast(x), pybind11::cast(y), **kwargs);
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::MatplotlibImpl::scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                                             const std::vector<DATA_TYPE>& z, const pybind11::dict& kwargs)
+void Matplotlib::MatplotlibImpl::scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                                               const std::vector<DATA_TYPE>& z, const pybind11::dict& kwargs)
 {
     this->_objectMap["Axes3D"].attr("scatter")(pybind11::cast(x), pybind11::cast(y), pybind11::cast(z), **kwargs);
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::MatplotlibImpl::scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                                               const pybind11::dict& kwargs)
+void Matplotlib::MatplotlibImpl::scatter3DAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                                                 const pybind11::dict& kwargs)
 {
     this->_objectMap["Axes3D"].attr("scatter3D")(pybind11::cast(x), pybind11::cast(y), **kwargs);
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::MatplotlibImpl::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                                          const std::vector<DATA_TYPE>& z, const pybind11::dict& kwargs)
+void Matplotlib::MatplotlibImpl::plotAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                                            const std::vector<DATA_TYPE>& z, const pybind11::dict& kwargs)
 {
     this->_objectMap["Axes3D"].attr("plot")(pybind11::cast(x), pybind11::cast(y), pybind11::cast(z), **kwargs);
 }
@@ -415,19 +422,24 @@ void Matplotlib::pause(const double interval)
     this->piml->pause(interval);
 }
 
-void Matplotlib::initializeAxes(const double width, const double height, const AnyBaseMap& anyBM)
+void Matplotlib::grid(const AnyBaseMap& anyBM)
 {
-    this->piml->initializeAxes(width, height, this->piml->transformAnyBaseToDict(anyBM));
+    this->piml->grid(this->piml->transformAnyBaseToDict(anyBM));
 }
 
-void Matplotlib::set_xlabelAxes(const std::string& xlabel, const AnyBaseMap& anyBM)
+void Matplotlib::initializeAxes3D(const double width, const double height, const AnyBaseMap& anyBM)
 {
-    this->piml->set_xlabelAxes(xlabel, this->piml->transformAnyBaseToDict(anyBM));
+    this->piml->initializeAxes3D(width, height, this->piml->transformAnyBaseToDict(anyBM));
 }
 
-void Matplotlib::set_ylabelAxes(const std::string& ylabel, const AnyBaseMap& anyBM)
+void Matplotlib::set_xlabelAxes3D(const std::string& xlabel, const AnyBaseMap& anyBM)
 {
-    this->piml->set_ylabelAxes(ylabel, this->piml->transformAnyBaseToDict(anyBM));
+    this->piml->set_xlabelAxes3D(xlabel, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+void Matplotlib::set_ylabelAxes3D(const std::string& ylabel, const AnyBaseMap& anyBM)
+{
+    this->piml->set_ylabelAxes3D(ylabel, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
@@ -462,30 +474,31 @@ void Matplotlib::scatter(const std::vector<DATA_TYPE>& x, const std::vector<DATA
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
-{
-    this->piml->scatterAxes(x, y, this->piml->transformAnyBaseToDict(anyBM));
-}
-
-template <typename DATA_TYPE>
-void Matplotlib::scatterAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                             const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM)
-{
-    this->piml->scatterAxes(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
-}
-
-template <typename DATA_TYPE>
-void Matplotlib::scatter3DAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+void Matplotlib::scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                                const AnyBaseMap& anyBM)
 {
-    this->piml->scatter3DAxes(x, y, this->piml->transformAnyBaseToDict(anyBM));
+    this->piml->scatterAxes3D(x, y, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                          const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM)
+void Matplotlib::scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                               const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM)
 {
-    this->piml->plotAxes(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
+    this->piml->scatterAxes3D(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::scatter3DAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                                 const AnyBaseMap& anyBM)
+{
+    this->piml->scatter3DAxes3D(x, y, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::plotAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                            const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM)
+{
+    this->piml->plotAxes3D(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
@@ -505,14 +518,15 @@ void Matplotlib::plot_surface(const std::vector<std::vector<DATA_TYPE>>& x,
                                               const AnyBaseMap& anyBM);                                                \
     template void Matplotlib::scatter<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,     \
                                                  const AnyBaseMap& anyBM);                                             \
-    template void Matplotlib::scatterAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, \
-                                                     const AnyBaseMap& anyBM);                                         \
-    template void Matplotlib::scatterAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, \
-                                                     const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);        \
-    template void Matplotlib::scatter3DAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x,                                \
+    template void Matplotlib::scatterAxes3D<DATA_TYPE>(const std::vector<DATA_TYPE>& x,                                \
                                                        const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM);      \
-    template void Matplotlib::plotAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,    \
-                                                  const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);           \
+    template void Matplotlib::scatterAxes3D<DATA_TYPE>(const std::vector<DATA_TYPE>& x,                                \
+                                                       const std::vector<DATA_TYPE>& y,                                \
+                                                       const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);      \
+    template void Matplotlib::scatter3DAxes3D<DATA_TYPE>(const std::vector<DATA_TYPE>& x,                              \
+                                                         const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM);    \
+    template void Matplotlib::plotAxes3D<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,  \
+                                                    const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);         \
     template void Matplotlib::plot_surface<DATA_TYPE>(                                                                 \
         const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,                    \
         const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM)

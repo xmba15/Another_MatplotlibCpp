@@ -49,6 +49,7 @@ int main(int argc, char* argv[])
                 });
 
     mpllib.xlim(0, 1000 * 1000);
+    mpllib.grid();
     mpllib.title("Sample plot");
     mpllib.legend();
 

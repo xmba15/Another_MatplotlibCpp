@@ -35,7 +35,7 @@ int main(int argc, char* argv[])
         z.emplace_back(z_row);
     }
 
-    mpllib.initializeAxes();
+    mpllib.initializeAxes3D();
     mpllib.plot_surface(x, y, z,
                         {{"cmap", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("plasma")},
                          {"linewidth", pe::vis::Matplotlib::createAnyBaseMapData<double>(0)}});
