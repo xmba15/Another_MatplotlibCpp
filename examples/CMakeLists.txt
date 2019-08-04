@@ -3,6 +3,8 @@ list(APPEND EXAMPLES
   "Modern"
   "Animation"
   "Surface"
+  "Path"
+  "BezierPath"
 )
 
 function(__build_example example_name)

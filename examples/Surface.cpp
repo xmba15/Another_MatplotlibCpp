@@ -40,8 +40,8 @@ int main(int argc, char* argv[])
                         {{"cmap", pe::vis::Matplotlib::createAnyBaseMapData<std::string>("plasma")},
                          {"linewidth", pe::vis::Matplotlib::createAnyBaseMapData<double>(0)}});
 
-    // mpllib.show();
     mpllib.savefig("Surface.png");
+    mpllib.show();
 
     return 0;
 }

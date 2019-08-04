@@ -97,24 +97,43 @@ class Matplotlib
 
     template <typename DATA_TYPE>
     void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
-                     const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
-
-    template <typename DATA_TYPE>
-    void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
-                     const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
-
-    template <typename DATA_TYPE>
-    void scatter3DAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                        const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
 
     template <typename DATA_TYPE>
+    void scatterAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                       const std::vector<DATA_TYPE>& z,
+                       const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
+
+    template <typename DATA_TYPE>
+    void scatter3DAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
+                         const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")}});
+
+    template <typename DATA_TYPE>
     void plotAxes3D(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const std::vector<DATA_TYPE>& z,
-                  const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")},
-                                             {"color", createAnyBaseMapData<std::string>("green")}});
+                    const AnyBaseMap& anyBM = {{"marker", createAnyBaseMapData<std::string>("o")},
+                                               {"color", createAnyBaseMapData<std::string>("green")}});
 
     template <typename DATA_TYPE>
     void plot_surface(const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,
                       const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM = {});
+    //@}
+
+    //@{
+    /** wrapped methods from "matplotlib.axes" module.
+     */
+    void axes(const double width = 50, const double height = 50, const AnyBaseMap& anyBM = {});
+    void set_xlimAxes(const double left, const double right, const AnyBaseMap& anyBM = {});
+    void set_ylimAxes(const double bottom, const double top, const AnyBaseMap& anyBM = {});
+
+    template <typename DATA_TYPE>
+    void add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
+                   const AnyBaseMap& anyBM = {});
+
+    template <typename DATA_TYPE>
+    void plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM = {});
+
+    template <typename DATA_TYPE>
+    void textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::string& s, const AnyBaseMap& anyBM = {});
     //@}
 
     template <typename PARAM_DATA_TYPE>

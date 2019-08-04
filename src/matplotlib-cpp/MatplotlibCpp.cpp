@@ -36,8 +36,7 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     const bool& imported() const;
 
     //@{
-    /** wrapped methods from "matplotlib.pyplot" module. mainly used for 2d
-     * visualization
+    /** wrapped methods from "matplotlib.pyplot" module. mainly used for 2d visualization
      */
     pybind11::object figure(const double width, const double height, const pybind11::dict& kwargs);
 
@@ -45,7 +44,7 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     pybind11::object xlabel(const std::string& xlabelStr, const pybind11::dict& kwargs);
     pybind11::object xlim(const double left, const double right, const pybind11::dict& kwargs);
     pybind11::object ylabel(const std::string& ylabelStr, const pybind11::dict& kwargs);
-    pybind11::object ylim(const double left, const double right, const pybind11::dict& kwargs);
+    pybind11::object ylim(const double bottom, const double top, const pybind11::dict& kwargs);
     pybind11::object show(const pybind11::dict& kwargs);
     pybind11::object savefig(const std::string& figName, const pybind11::dict& kwargs);
 
@@ -71,8 +70,7 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     //@}
 
     //@{
-    /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d
-     * visualization
+    /** wrapped methods from "mpl_toolkits.mplot3d" module. mainly used for 3d visualization
      */
     void initializeAxes3D(const double width, const double height, const pybind11::dict& kwargs);
     void set_xlabelAxes3D(const std::string& xlabel, const pybind11::dict& kwargs);
@@ -98,6 +96,24 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
                       const std::vector<std::vector<DATA_TYPE>>& z, const pybind11::dict& kwargs);
     //@}
 
+    //@{
+    /** wrapped methods from "matplotlib.axes" module.
+     */
+    void axes(const double width, const double height, const pybind11::dict& kwargs);
+    void set_xlimAxes(const double left, const double right, const pybind11::dict& kwargs);
+    void set_ylimAxes(const double bottom, const double top, const pybind11::dict& kwargs);
+
+    template <typename DATA_TYPE>
+    void add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
+                   const pybind11::dict& kwargs);
+
+    template <typename DATA_TYPE>
+    void plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
+
+    template <typename DATA_TYPE>
+    void textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::string& s, const pybind11::dict& kwargs);
+    //@}
+
     pybind11::dict transformAnyBaseToDict(const AnyBaseMap& anyBM) const;
 
  private:
@@ -116,6 +132,12 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     //! Embedder of "mpl_toolkits.mplot3d" module.
     ModuleEmbedding _mplot3d;
 
+    //! Embedder of "matplotlib.path" module.
+    ModuleEmbedding _path;
+
+    //! Embedder of "matplotlib.patches" module.
+    ModuleEmbedding _patches;
+
     //! boolean flag to check if matplotlib's targeted modules have been imported successfully.
     bool _imported = false;
 
@@ -123,21 +145,30 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     ObjectMap _objectMap;
 
     //! names of the targeted object in "matplotlib.pyplot" module.
-    const std::vector<std::string> _pltObjectNames = {"figure",  "plot",    "title",    "xlabel", "ylabel",  "show",
-                                                      "savefig", "subplot", "suptitle", "hist",   "scatter", "legend",
-                                                      "xlim",    "ylim",    "clf",      "pause",  "grid"};
+    const std::vector<std::string> _pltObjectNames = {
+        "figure", "plot",    "title",  "xlabel", "ylabel", "show", "savefig", "subplot", "suptitle",
+        "hist",   "scatter", "legend", "xlim",   "ylim",   "clf",  "pause",   "grid",    "subplots"};
 
     //! names of the targeted object in "mpl_toolkits.mplot3d" module.
     const std::vector<std::string> _mplot3dObjectNames = {"Axes3D"};
+
+    //! names of the targeted object in "matplotlib.path" module.
+    const std::vector<std::string> _pathObjectNames = {"Path"};
+
+    //! names of the targeted object in "matplotlib.patches" module.
+    const std::vector<std::string> _patchesObjectNames = {"PathPatch"};
 };
 
 Matplotlib::MatplotlibImpl::MatplotlibImpl()
     : _mpl(ModuleEmbedding("matplotlib")), _plt(ModuleEmbedding("matplotlib.pyplot")),
-      _mplot3d(ModuleEmbedding("mpl_toolkits.mplot3d"))
+      _mplot3d(ModuleEmbedding("mpl_toolkits.mplot3d")), _path(ModuleEmbedding("matplotlib.path")),
+      _patches(ModuleEmbedding("matplotlib.patches"))
 {
     this->_imported = this->_mpl.importModule();
     this->_imported = this->_plt.importModule();
     this->_imported = this->_mplot3d.importModule();
+    this->_imported = this->_path.importModule();
+    this->_imported = this->_patches.importModule();
 
     this->updateObjectMap();
 }
@@ -161,6 +192,14 @@ void Matplotlib::MatplotlibImpl::updateObjectMap()
 
     for (const std::string& objectName : this->_mplot3dObjectNames) {
         this->_objectMap.emplace(objectName, this->_mplot3d.pyModule().attr(objectName.c_str()));
+    }
+
+    for (const std::string& objectName : this->_pathObjectNames) {
+        this->_objectMap.emplace(objectName, this->_path.pyModule().attr(objectName.c_str()));
+    }
+
+    for (const std::string& objectName : this->_patchesObjectNames) {
+        this->_objectMap.emplace(objectName, this->_patches.pyModule().attr(objectName.c_str()));
     }
 }
 
@@ -277,6 +316,22 @@ void Matplotlib::MatplotlibImpl::set_ylabelAxes3D(const std::string& ylabel, con
     this->_objectMap["Axes3D"].attr("set_ylabel")(ylabel, **kwargs);
 }
 
+void Matplotlib::MatplotlibImpl::axes(const double width, const double height, const pybind11::dict& kwargs)
+{
+    pybind11::tuple figAx = this->_objectMap["subplots"]("figsize"_a = pybind11::make_tuple(width, height), **kwargs);
+    this->_objectMap["axes"] = figAx[1];
+}
+
+void Matplotlib::MatplotlibImpl::set_xlimAxes(const double left, const double right, const pybind11::dict& kwargs)
+{
+    this->_objectMap["axes"].attr("set_xlim")(left, right, **kwargs);
+}
+
+void Matplotlib::MatplotlibImpl::set_ylimAxes(const double bottom, const double top, const pybind11::dict& kwargs)
+{
+    this->_objectMap["axes"].attr("set_ylim")(bottom, top, **kwargs);
+}
+
 template <typename DATA_TYPE>
 pybind11::object Matplotlib::MatplotlibImpl::plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                                                   const pybind11::dict& kwargs)
@@ -335,6 +390,29 @@ void Matplotlib::MatplotlibImpl::plot_surface(const std::vector<std::vector<DATA
     this->_objectMap["Axes3D"].attr("plot_surface")("X"_a = pybind11::array(pybind11::cast(x)),
                                                     "Y"_a = pybind11::array(pybind11::cast(y)),
                                                     "Z"_a = pybind11::array(pybind11::cast(z)), **kwargs);
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::MatplotlibImpl::add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices,
+                                           const std::vector<int>& codes, const pybind11::dict& kwargs)
+{
+    pybind11::object path = this->_objectMap["Path"](pybind11::cast(vertices), pybind11::cast(codes));
+    pybind11::object patch = this->_objectMap["PathPatch"]("path"_a = path, **kwargs);
+    this->_objectMap["axes"].attr("add_patch")(patch);
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::MatplotlibImpl::plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y,
+                                          const pybind11::dict& kwargs)
+{
+    this->_objectMap["axes"].attr("plot")(pybind11::cast(x), pybind11::cast(y), **kwargs);
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::MatplotlibImpl::textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::string& s,
+                                          const pybind11::dict& kwargs)
+{
+    this->_objectMap["axes"].attr("text")("x"_a = x, "y"_a = y, "s"_a = s, **kwargs);
 }
 
 //-------------------------------------------------------------------------------------------------------------//
@@ -442,6 +520,21 @@ void Matplotlib::set_ylabelAxes3D(const std::string& ylabel, const AnyBaseMap& a
     this->piml->set_ylabelAxes3D(ylabel, this->piml->transformAnyBaseToDict(anyBM));
 }
 
+void Matplotlib::axes(const double width, const double height, const AnyBaseMap& anyBM)
+{
+    this->piml->axes(width, height, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+void Matplotlib::set_xlimAxes(const double left, const double right, const AnyBaseMap& anyBM)
+{
+    this->piml->set_xlimAxes(left, right, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+void Matplotlib::set_ylimAxes(const double bottom, const double top, const AnyBaseMap& anyBM)
+{
+    this->piml->set_ylimAxes(bottom, top, this->piml->transformAnyBaseToDict(anyBM));
+}
+
 template <typename DATA_TYPE>
 void Matplotlib::plot(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
 
@@ -509,6 +602,25 @@ void Matplotlib::plot_surface(const std::vector<std::vector<DATA_TYPE>>& x,
     this->piml->plot_surface(x, y, z, this->piml->transformAnyBaseToDict(anyBM));
 }
 
+template <typename DATA_TYPE>
+void Matplotlib::add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
+                           const AnyBaseMap& anyBM)
+{
+    this->piml->add_patch(vertices, codes, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
+{
+    this->piml->plotAxes(x, y, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+template <typename DATA_TYPE>
+void Matplotlib::textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::string& s, const AnyBaseMap& anyBM)
+{
+    this->piml->textAxes(x, y, s, this->piml->transformAnyBaseToDict(anyBM));
+}
+
 #define QUICK_CAST(DATA_TYPE)                                                                                          \
     template void Matplotlib::plot<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,        \
                                               const AnyBaseMap& anyBM);                                                \
@@ -529,7 +641,14 @@ void Matplotlib::plot_surface(const std::vector<std::vector<DATA_TYPE>>& x,
                                                     const std::vector<DATA_TYPE>& z, const AnyBaseMap& anyBM);         \
     template void Matplotlib::plot_surface<DATA_TYPE>(                                                                 \
         const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,                    \
-        const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM)
+        const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM);                                        \
+    template void Matplotlib::add_patch<DATA_TYPE>(std::vector<std::array<DATA_TYPE, 2>> & vertices,                   \
+                                                   const std::vector<int>& codes, const AnyBaseMap& anyBM);            \
+    template void Matplotlib::plotAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y,          \
+                                                  const AnyBaseMap& anyBM);                                            \
+    template void Matplotlib::textAxes<DATA_TYPE>(const DATA_TYPE x, const DATA_TYPE y, const std::string& s,          \
+                                                  const AnyBaseMap& anyBM);
+
 
 QUICK_CAST(double);
 QUICK_CAST(float);

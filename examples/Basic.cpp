@@ -53,8 +53,8 @@ int main(int argc, char* argv[])
     mpllib.title("Sample plot");
     mpllib.legend();
 
-    // mpllib.show();
     mpllib.savefig("Basic.png");
+    mpllib.show();
 
     return 0;
 }
