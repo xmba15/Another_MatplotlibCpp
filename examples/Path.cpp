@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
         exit(EXIT_FAILURE);
     }
 
-    mpllib.axes();
+    mpllib.axes(5, 5);
     std::vector<std::array<double, 2>> vertices = {{0., 0.}, {0., 1.}, {1., 1.}, {1., 0.}, {0., 0.}};
     std::vector<int> codes = {MOVETO, LINETO, LINETO, LINETO, CLOSEPOLY};
     mpllib.set_xlimAxes(-2, 2);
