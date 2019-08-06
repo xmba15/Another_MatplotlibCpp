@@ -129,6 +129,3 @@ Each pair has the following structure:
 </p>
 
 More examples can be easily created by using current wrapped functions or adding more modules, functions from python side.
-
-## Software Design Choice ##
-As mentioned above, this library utilizes [pybind11](https://github.com/pybind/pybind11.git) to connect with the python side. My first implementation attempt has badly exposed pybind11 headers in the implementation header files; leading to public link of pybind11. To solve this problem, piml pattern is then used to hide all the implementations and pybind11 in the cpp files, which helps keep pybind11 private. This is the current software design choice for master branch. However, I still keep the first implementation attempt on pybind11_public branch for reference.
