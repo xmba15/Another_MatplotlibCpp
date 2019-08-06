@@ -104,11 +104,11 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     void set_ylimAxes(const double bottom, const double top, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
+    void add_patch(const std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
                    const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
-    void plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
+    void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const pybind11::dict& kwargs);
 
     template <typename DATA_TYPE>
     void textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::string& s, const pybind11::dict& kwargs);
@@ -393,7 +393,7 @@ void Matplotlib::MatplotlibImpl::plot_surface(const std::vector<std::vector<DATA
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::MatplotlibImpl::add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices,
+void Matplotlib::MatplotlibImpl::add_patch(const std::vector<std::array<DATA_TYPE, 2>>& vertices,
                                            const std::vector<int>& codes, const pybind11::dict& kwargs)
 {
     pybind11::object path = this->_objectMap["Path"](pybind11::cast(vertices), pybind11::cast(codes));
@@ -402,7 +402,7 @@ void Matplotlib::MatplotlibImpl::add_patch(std::vector<std::array<DATA_TYPE, 2>>
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::MatplotlibImpl::plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y,
+void Matplotlib::MatplotlibImpl::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,
                                           const pybind11::dict& kwargs)
 {
     this->_objectMap["axes"].attr("plot")(pybind11::cast(x), pybind11::cast(y), **kwargs);
@@ -603,14 +603,14 @@ void Matplotlib::plot_surface(const std::vector<std::vector<DATA_TYPE>>& x,
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
+void Matplotlib::add_patch(const std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
                            const AnyBaseMap& anyBM)
 {
     this->piml->add_patch(vertices, codes, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 template <typename DATA_TYPE>
-void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
+void Matplotlib::plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM)
 {
     this->piml->plotAxes(x, y, this->piml->transformAnyBaseToDict(anyBM));
 }
@@ -642,13 +642,12 @@ void Matplotlib::textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::strin
     template void Matplotlib::plot_surface<DATA_TYPE>(                                                                 \
         const std::vector<std::vector<DATA_TYPE>>& x, const std::vector<std::vector<DATA_TYPE>>& y,                    \
         const std::vector<std::vector<DATA_TYPE>>& z, const AnyBaseMap& anyBM);                                        \
-    template void Matplotlib::add_patch<DATA_TYPE>(std::vector<std::array<DATA_TYPE, 2>> & vertices,                   \
+    template void Matplotlib::add_patch<DATA_TYPE>(const std::vector<std::array<DATA_TYPE, 2>>& vertices,              \
                                                    const std::vector<int>& codes, const AnyBaseMap& anyBM);            \
-    template void Matplotlib::plotAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y,          \
+    template void Matplotlib::plotAxes<DATA_TYPE>(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y,    \
                                                   const AnyBaseMap& anyBM);                                            \
     template void Matplotlib::textAxes<DATA_TYPE>(const DATA_TYPE x, const DATA_TYPE y, const std::string& s,          \
                                                   const AnyBaseMap& anyBM);
-
 
 QUICK_CAST(double);
 QUICK_CAST(float);

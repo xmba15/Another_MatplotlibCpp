@@ -126,11 +126,11 @@ class Matplotlib
     void set_ylimAxes(const double bottom, const double top, const AnyBaseMap& anyBM = {});
 
     template <typename DATA_TYPE>
-    void add_patch(std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
+    void add_patch(const std::vector<std::array<DATA_TYPE, 2>>& vertices, const std::vector<int>& codes,
                    const AnyBaseMap& anyBM = {});
 
     template <typename DATA_TYPE>
-    void plotAxes(const std::vector<DATA_TYPE>& x, std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM = {});
+    void plotAxes(const std::vector<DATA_TYPE>& x, const std::vector<DATA_TYPE>& y, const AnyBaseMap& anyBM = {});
 
     template <typename DATA_TYPE>
     void textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::string& s, const AnyBaseMap& anyBM = {});
