@@ -5,6 +5,7 @@ list(APPEND EXAMPLES
   "Surface"
   "Path"
   "BezierPath"
+  "Hyperplane"
 )
 
 function(__build_example example_name)

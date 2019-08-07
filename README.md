@@ -128,4 +128,12 @@ Each pair has the following structure:
     <img src="./docs/images/BezierPath.png", width="640">
 </p>
 
+### Hyperplane ###
+[Source Code](./examples/Hyperplane.cpp)
+
+<p align="center">
+    <img src="./docs/images/Hyperplane.png", width="640">
+</p>
+
+
 More examples can be easily created by using current wrapped functions or adding more modules, functions from python side.
