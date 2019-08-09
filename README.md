@@ -10,7 +10,7 @@ I was looking for a light-weighted C++ library for visualization to integrate in
  - python2/3
  - [pybind11](https://github.com/pybind/pybind11.git) : C++ library for seamless conversion between C++ and python
  - [matplotlib](https://matplotlib.org/)
- - [cmake](https://cmake.org/): version 3.0 and above
+ - [cmake](https://cmake.org/): >= 3.8
 
 ## How to Build ##
 ### Commands ###

@@ -8,19 +8,18 @@ list(APPEND EXAMPLES
   "Hyperplane"
 )
 
-function(__build_example example_name)
-  add_executable(
-    ${example_name}
-    ${CMAKE_CURRENT_LIST_DIR}/${example_name}.cpp
-  )
+include(example_utility)
+list(APPEND PUBLIC_LIBS
+  ${PROJECT_TARGET_LIB_NAME}
+)
 
-  target_link_libraries(
-    ${example_name}
-    PUBLIC
-       matplotlib-cpp
-  )
-endfunction(__build_example example_name)
+list(APPEND PRIVATE_LIBS
+)
 
 foreach(EXAMPLE ${EXAMPLES})
-  __build_example(${EXAMPLE})
+  __build_example(
+    ${EXAMPLE}
+    "${PUBLIC_LIBS}"
+    "${PRIVATE_LIBS}"
+  )
 endforeach(EXAMPLE)
