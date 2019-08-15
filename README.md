@@ -6,6 +6,7 @@ I was looking for a light-weighted C++ library for visualization to integrate in
 
 ## Dependencies ##
  - OS: Ubuntu (tested on 16.04, 19.04)
+ - compiler: tested with gcc-6
  - C++11 and above
  - python2/3
  - [pybind11](https://github.com/pybind/pybind11.git) : C++ library for seamless conversion between C++ and python

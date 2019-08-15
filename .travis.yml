@@ -8,15 +8,20 @@ sudo: false
 compiler:
   - gcc
 
-before_install:
-  - readonly PARENT_DIR=$(pwd)
-
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
       - cmake
+      - g++-6
+
+env:
+  - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+before_install:
+  - readonly PARENT_DIR=$(pwd)
+  - eval "${MATRIX_EVAL}"
 
 script:
   - cd ${PARENT_DIR}
