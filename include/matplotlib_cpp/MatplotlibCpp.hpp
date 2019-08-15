@@ -58,6 +58,7 @@ class Matplotlib
     void xlim(const double left, const double right, const AnyBaseMap& anyBM = {});
     void ylim(const double bottom, const double top, const AnyBaseMap& anyBM = {});
     void ylabel(const std::string& ylabelStr, const AnyBaseMap& anyBM = {});
+    void axis(const std::string& axisType = "scaled", const AnyBaseMap& anyBM = {});
     void show(const AnyBaseMap& anyBM = {});
     void savefig(const std::string& figName, const AnyBaseMap& anyBM = {});
 

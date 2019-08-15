@@ -45,6 +45,7 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
     pybind11::object xlim(const double left, const double right, const pybind11::dict& kwargs);
     pybind11::object ylabel(const std::string& ylabelStr, const pybind11::dict& kwargs);
     pybind11::object ylim(const double bottom, const double top, const pybind11::dict& kwargs);
+    pybind11::object axis(const std::string& axisType, const pybind11::dict& kwargs);
     pybind11::object show(const pybind11::dict& kwargs);
     pybind11::object savefig(const std::string& figName, const pybind11::dict& kwargs);
 
@@ -146,8 +147,8 @@ class PYBIND11_EXPORT Matplotlib::MatplotlibImpl
 
     //! names of the targeted object in "matplotlib.pyplot" module.
     const std::vector<std::string> _pltObjectNames = {
-        "figure", "plot",    "title",  "xlabel", "ylabel", "show", "savefig", "subplot", "suptitle",
-        "hist",   "scatter", "legend", "xlim",   "ylim",   "clf",  "pause",   "grid",    "subplots"};
+        "figure",  "plot",   "title", "xlabel", "ylabel", "show",  "savefig", "subplot",  "suptitle", "hist",
+        "scatter", "legend", "xlim",  "ylim",   "clf",    "pause", "grid",    "subplots", "axis"};
 
     //! names of the targeted object in "mpl_toolkits.mplot3d" module.
     const std::vector<std::string> _mplot3dObjectNames = {"Axes3D"};
@@ -257,6 +258,11 @@ pybind11::object Matplotlib::MatplotlibImpl::ylabel(const std::string& ylabelStr
 pybind11::object Matplotlib::MatplotlibImpl::ylim(const double bottom, const double top, const pybind11::dict& kwargs)
 {
     return this->_objectMap["ylim"](bottom, top, **kwargs);
+}
+
+pybind11::object Matplotlib::MatplotlibImpl::axis(const std::string& axisType, const pybind11::dict& kwargs)
+{
+    return this->_objectMap["axis"](axisType, **kwargs);
 }
 
 pybind11::object Matplotlib::MatplotlibImpl::show(const pybind11::dict& kwargs)
@@ -463,6 +469,11 @@ void Matplotlib::ylabel(const std::string& ylabelStr, const AnyBaseMap& anyBM)
 void Matplotlib::ylim(const double bottom, const double top, const AnyBaseMap& anyBM)
 {
     this->piml->xlim(bottom, top, this->piml->transformAnyBaseToDict(anyBM));
+}
+
+void Matplotlib::axis(const std::string& axisType, const AnyBaseMap& anyBM)
+{
+    this->piml->axis(axisType, this->piml->transformAnyBaseToDict(anyBM));
 }
 
 void Matplotlib::show(const AnyBaseMap& anyBM)
