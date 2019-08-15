@@ -13,7 +13,7 @@
 #include <pybind11/stl.h>
 
 #include "ModuleEmbedding.hpp"
-#include <matplotlib-cpp/MatplotlibCpp.hpp>
+#include "matplotlib_cpp/MatplotlibCpp.hpp"
 
 namespace pe
 {
@@ -652,6 +652,8 @@ void Matplotlib::textAxes(const DATA_TYPE x, const DATA_TYPE y, const std::strin
 QUICK_CAST(double);
 QUICK_CAST(float);
 QUICK_CAST(int);
+
+#undef QUICK_CAST
 
 }  // namespace vis
 }  // namespace pe

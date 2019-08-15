@@ -11,7 +11,7 @@
 #include <iostream>
 #include <vector>
 
-#include <matplotlib-cpp/MatplotlibCpp.hpp>
+#include <matplotlib_cpp/MatplotlibCpp.hpp>
 
 enum MPL_PATH { STOP = 0, MOVETO = 1, LINETO = 2, CURVE3 = 3, CURVE4 = 4, CLOSEPOLY = 5 };
 

@@ -11,8 +11,7 @@
  *
  */
 
-#ifndef PYTHONINTERPRETER_HPP_
-#define PYTHONINTERPRETER_HPP_
+#pragma once
 
 #include <pybind11/embed.h>
 #include <string>
@@ -60,4 +59,3 @@ PythonInterpreter& PythonInterpreter::getInstance()
 }
 
 }  // namespace pe
-#endif /* PYTHONINTERPRETER_HPP_ */

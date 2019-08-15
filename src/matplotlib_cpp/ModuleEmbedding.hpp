@@ -9,8 +9,7 @@
  *
  */
 
-#ifndef MODULEEMBEDDING_HPP_
-#define MODULEEMBEDDING_HPP_
+#pragma once
 
 #include <pybind11/eval.h>
 #include <string>
@@ -104,4 +103,3 @@ bool ModuleEmbedding::importModule()
 }
 
 }  // namespace pe
-#endif /* MODULEEMBEDDING_HPP_ */

@@ -9,8 +9,7 @@
  *
  */
 
-#ifndef ANYBASE_HPP_
-#define ANYBASE_HPP_
+#pragma once
 
 #include <memory>
 #include <string>
@@ -38,4 +37,3 @@ template <typename DATA_TYPE> struct Any : public AnyBase {
 };
 
 }  // namespace pe
-#endif /* ANYBASE_HPP_ */

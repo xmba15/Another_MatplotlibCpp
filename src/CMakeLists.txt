@@ -1,7 +1,7 @@
 set(LIBRARY_NAME ${PROJECT_TARGET_LIB_NAME})
 
 file(GLOB SOURCE_FILES
-  ${CMAKE_CURRENT_LIST_DIR}/matplotlib-cpp/MatplotlibCpp.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/matplotlib_cpp/MatplotlibCpp.cpp
 )
 
 add_library(${LIBRARY_NAME}
@@ -29,4 +29,31 @@ target_compile_options(${LIBRARY_NAME}
 target_link_libraries(${LIBRARY_NAME}
   PRIVATE
      pybind11::embed
+)
+
+if(NOT DEFINED CMAKE_INSTALL_LIBDIR)
+    set(CMAKE_INSTALL_LIBDIR "lib")
+endif()
+
+install(TARGETS ${PROJECT_TARGET_LIB_NAME}
+  EXPORT ${PROJECT_TARGET_LIB_NAME}-targets
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
+
+install(EXPORT  ${PROJECT_TARGET_LIB_NAME}-targets
+  DESTINATION share/cmake/${PROJECT_NAME}
+  EXPORT_LINK_INTERFACE_LIBRARIES
+)
+
+set(CONFIG_FILE "${CMAKE_BINARY_DIR}/${PROJECT_NAME}Config.cmake")
+configure_file(${PROJECT_SOURCE_DIR}/cmake/MatplotlibCppConfig.cmake.in "${CONFIG_FILE}" @ONLY)
+
+install(FILES "${CONFIG_FILE}"
+  DESTINATION share/cmake/${PROJECT_NAME}
+)
+
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/matplotlib_cpp
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.h*"
 )

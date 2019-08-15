@@ -13,7 +13,7 @@
 #include <iostream>
 #include <vector>
 
-#include <matplotlib-cpp/MatplotlibCpp.hpp>
+#include <matplotlib_cpp/MatplotlibCpp.hpp>
 
 std::vector<double> linspace(const double min, const double max, const size_t numPoint = 20);
 

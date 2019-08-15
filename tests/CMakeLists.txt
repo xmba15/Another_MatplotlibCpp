@@ -6,7 +6,7 @@ add_executable(
 target_link_libraries(
   unit_tests
   PUBLIC
-  matplotlib-cpp
+  matplotlib_cpp
   PRIVATE
   gtest_main
 )

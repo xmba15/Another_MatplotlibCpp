@@ -9,8 +9,7 @@
  *
  */
 
-#ifndef MATPLOTLIBCPP_HPP_
-#define MATPLOTLIBCPP_HPP_
+#pragma once
 
 #include <functional>
 #include <map>
@@ -155,5 +154,3 @@ std::pair<std::string, std::shared_ptr<AnyBase>> Matplotlib::createAnyBaseMapDat
 
 }  // namespace vis
 }  // namespace pe
-
-#endif /* MATPLOTLIBCPP_HPP_ */

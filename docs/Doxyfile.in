@@ -1,4 +1,4 @@
-PROJECT_NAME           = "matplotlib-cpp"
+PROJECT_NAME           = "matplotlib_cpp"
 
 OUTPUT_DIRECTORY       = @CMAKE_CURRENT_BINARY_DIR@/doc_doxygen/
 

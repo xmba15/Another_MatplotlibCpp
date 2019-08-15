@@ -11,7 +11,7 @@
 #include <iostream>
 #include <vector>
 
-#include <matplotlib-cpp/MatplotlibCpp.hpp>
+#include <matplotlib_cpp/MatplotlibCpp.hpp>
 
 int main(int argc, char* argv[])
 {
