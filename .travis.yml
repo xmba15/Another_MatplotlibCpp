@@ -28,8 +28,13 @@ script:
   - git submodule update --init --recursive
   - mkdir build
   - cd build
-  - cmake -DBUILD_EXAMPLES=ON ../
-  - cmake --build .
+  - cmake \
+  -DCMAKE_CXX_FLAGS=${CXX_FLAGS} \
+  -DCMAKE_BUILD_TYPE=Release \
+  -DPYTHON_EXECUTABLE=$(python-config --prefix)/bin/python3.5 \
+  -DPYTHON_LIBRARY=$(python-config --prefix)/lib/libpython3.5m.so \
+  -DPYTHON_INCLUDE_DIR=$(python-config --prefix)/include/python3.5m ..
+  - make -j`nproc`
 
 notifications:
   email: false

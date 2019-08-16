@@ -4,6 +4,12 @@ file(GLOB SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/matplotlib_cpp/MatplotlibCpp.cpp
 )
 
+include(pybind11)
+__fetch_pybind11(
+  ${PROJECT_SOURCE_DIR}/cmake
+  ${PROJECT_BINARY_DIR}/pybind11_for_${PROJECT_TARGET_LIB_NAME}
+)
+
 add_library(${LIBRARY_NAME}
   SHARED
      ${SOURCE_FILES}
