@@ -1,33 +1,30 @@
-# code copied from https://github.com/bast/gtest-demo
-macro(fetch_googletest _download_module_path _download_root)
-    set(GOOGLETEST_DOWNLOAD_ROOT ${_download_root})
+function(__fetch_googletest download_module_path download_root)
+  set(GOOGLETEST_DOWNLOAD_ROOT ${download_root})
 
-    configure_file(
-        ${_download_module_path}/googletest-download.cmake
-        ${_download_root}/CMakeLists.txt
-        @ONLY
+  configure_file(
+    ${download_module_path}/googletest-download.cmake
+    ${download_root}/CMakeLists.txt
+    @ONLY
     )
 
-    unset(GOOGLETEST_DOWNLOAD_ROOT)
+  unset(GOOGLETEST_DOWNLOAD_ROOT)
 
-    execute_process(
-        COMMAND
-            "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
-        WORKING_DIRECTORY
-            ${_download_root}
+  execute_process(
+    COMMAND
+      "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
+    WORKING_DIRECTORY
+      ${download_root}
     )
 
-    execute_process(
-        COMMAND
-            "${CMAKE_COMMAND}" --build .
-        WORKING_DIRECTORY
-            ${_download_root}
+  execute_process(
+    COMMAND
+      "${CMAKE_COMMAND}" --build .
+    WORKING_DIRECTORY
+      ${download_root}
     )
 
-    # adds the targers: gtest, gtest_main, gmock, gmock_main
-    add_subdirectory(
-        ${_download_root}/googletest-src
-        ${_download_root}/googletest-build
+  add_subdirectory(
+    ${download_root}/googletest-src
+    ${download_root}/googletest-build
     )
-
-endmacro()
+endfunction()

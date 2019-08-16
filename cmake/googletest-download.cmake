@@ -1,10 +1,8 @@
-# code copied from https://github.com/bast/gtest-demo
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.8)
 
 project(googletest-download NONE)
 
 include(ExternalProject)
-
 ExternalProject_Add(
   googletest
   SOURCE_DIR "@GOOGLETEST_DOWNLOAD_ROOT@/googletest-src"

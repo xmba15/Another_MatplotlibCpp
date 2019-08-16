@@ -1,19 +1,27 @@
+if (NOT TARGET gtest)
+include(googletest)
+__fetch_googletest(
+  ${PROJECT_SOURCE_DIR}/cmake
+  ${PROJECT_BINARY_DIR}/googletest
+)
+endif()
+
 add_executable(
-  unit_tests
-  [cpp test files]
+  ${PROJECT_TARGET_LIB_NAME}_unit_tests
+  TestInitialization.cpp
 )
 
 target_link_libraries(
-  unit_tests
+  ${PROJECT_TARGET_LIB_NAME}_unit_tests
   PUBLIC
-  matplotlib_cpp
+    matplotlib_cpp
   PRIVATE
-  gtest_main
+    gtest_main
 )
 
 add_test(
   NAME
-  unit_tests
+    ${PROJECT_TARGET_LIB_NAME}_unit_tests
   COMMAND
-  $<TARGET_FILE:unit_tests>
+    $<TARGET_FILE:${PROJECT_TARGET_LIB_NAME}_unit_tests>
 )
