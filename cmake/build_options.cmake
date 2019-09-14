@@ -37,3 +37,5 @@ if(BUILD_DOC)
     message(STATUS "Doxygen not found")
   endif(DOXYGEN_FOUND)
 endif(BUILD_DOC)
+
+option(USE_PYENV "Build documentation" OFF)

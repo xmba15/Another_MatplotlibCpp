@@ -4,6 +4,11 @@ file(GLOB SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/matplotlib_cpp/MatplotlibCpp.cpp
 )
 
+# use python version other than system python
+if(USE_PYENV)
+  include(FindPythonPyenv)
+endif(USE_PYENV)
+
 include(pybind11)
 __fetch_pybind11(
   ${PROJECT_SOURCE_DIR}/cmake
